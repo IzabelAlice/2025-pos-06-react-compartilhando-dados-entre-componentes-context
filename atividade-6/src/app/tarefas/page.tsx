@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { TarefaInterface } from "@/data";
 import Cabecalho from "@/componentes/Cabecalho";
-import ModalTarefa from "@/componentes/Add_tarefa";
-
+import Navbar from "@/componentes/Navbar"; 
 
 interface Tarefa {
   titulo: string;
@@ -39,7 +38,7 @@ interface Tarefas {
 
 const Tarefas: React.FC<Tarefas> = ({ dados }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
       {dados.map((tarefa) => (
         <Tarefa
           key={tarefa.id}
@@ -51,12 +50,10 @@ const Tarefas: React.FC<Tarefas> = ({ dados }) => {
   );
 };
 
-
-
 const Home = () => {
   const [tarefas, setTarefas] = useState<TarefaInterface[]>([]);
-  const [mostrarModal, setMostrarModal] = useState(false);
-   useEffect(() => {
+
+  useEffect(() => {
     axios.get("https://dummyjson.com/todos")
       .then((response) => {
         const tarefasData: TarefaInterface[] = response.data.todos.map((tarefa: any) => ({
@@ -71,30 +68,10 @@ const Home = () => {
       });
     }, []);
 
-  const adicionarTarefa = (titulo: string) => {
-    const novaTarefa: TarefaInterface = {
-      id: Date.now(),
-      title: titulo,
-      completed: false,
-    };
-    setTarefas((prev) => [novaTarefa, ...prev]);
-  };
-
   return (
-    <div className="container mx-auto p-4">
+    <div className="">
+      <Navbar />
       <Cabecalho />
-      <button
-        className="mb-4 px-4 py-2 bg-slate-600 text-white rounded hover:bg-slate-700"
-        onClick={() => setMostrarModal(true)}
-      >
-        Nova Tarefa
-      </button>
-      {mostrarModal && (
-        <ModalTarefa
-          onFechar={() => setMostrarModal(false)}
-          onAdicionar={adicionarTarefa}
-        />
-      )}
       <Tarefas dados={tarefas} />
     </div>
   );
